@@ -9,5 +9,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18.0.0'
-      - run: npm install
-      - run: npm run test
+      - name: Install dependencies
+        run: npm install
+      - name: Run all vite tests
+        run: npm run test
+      - name: build the production version
+        run: npm run build
+      - name: Start the production app
+        run: node build
