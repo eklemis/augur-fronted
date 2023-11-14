@@ -1,18 +1,19 @@
+import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/svelte';
 import Metric from './metric.svelte';
 
 describe('metric', () => {
-	test('renders title correctly', () => {
+	it('renders title correctly', () => {
 		const { getByText } = render(Metric, {
 			title: 'Test Title',
 			avg: 506,
 			last_month: 607,
 			forecast: 700
 		});
-		expect(getByText('Test Title')).toBeInTheDocument();
+		expect(getByText('Test Title')).toBeTruthy();
 	});
 
-	test('renders bars and text for provided data', () => {
+	it('renders bars and text for provided data', () => {
 		const props = {
 			avg: 50,
 			last_month: 40,
@@ -27,12 +28,8 @@ describe('metric', () => {
 		expect(svgElements.length).toBeGreaterThan(0);
 
 		// Check for specific text elements
-		expect(container).toHaveTextContent(props.avg.toString());
-		expect(container).toHaveTextContent('Last Month');
-		expect(container).toHaveTextContent('Forecast');
-
-		// Additional checks can be added for rects (bars) and other elements
+		expect(container.textContent).toContain(props.avg.toString());
+		expect(container.textContent).toContain('Last Month');
+		expect(container.textContent).toContain('Forecast');
 	});
-
-	// Additional tests can be added as needed
 });

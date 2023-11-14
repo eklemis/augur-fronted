@@ -15,6 +15,7 @@
 
 	const MAX_BTN_COUNT = 6;
 	const MAX_OFFSET = Math.floor(total_length / per_page) * per_page;
+	const MAX_PAGE = Math.floor(total_length / per_page);
 
 	const page_by_offset = (curr_offset) => Math.floor(curr_offset / per_page) + 1;
 	const populate_page_numbers = (source_page) => {
@@ -85,6 +86,6 @@
 						? 'text-gray-500'
 						: ' hover:border-primary-300 active:border-primary-300 active:font-bold'
 				}`}
-		href={offset >= MAX_OFFSET ? null : base_url + '&offset=' + MAX_OFFSET}>{'>>'}</a
+		href={page >= MAX_PAGE ? null : base_url + '&offset=' + MAX_OFFSET}>{'>>'}</a
 	>
 </nav>

@@ -1,5 +1,5 @@
 <script>
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
 	const dispatch = createEventDispatcher();
 
 	const MIN = 0;
@@ -23,11 +23,7 @@
 	let btn_r = 8;
 	let minButtonLeft = value_to_coord(default_min) - btn_r;
 	let maxButtonLeft = value_to_coord(default_max) - btn_r;
-	// onMount(() => {
-	// 	minButtonLeft = value_to_coord(default_min) - btn_r;
-	// 	maxButtonLeft = value_to_coord(default_max) - btn_r;
-	// 	console.log(default_min, default_max);
-	// });
+
 	$: selected_x_min = minButtonLeft + btn_r;
 	$: selected_x_max = maxButtonLeft + btn_r;
 	$: min_value = coord_to_value(selected_x_min);
@@ -54,11 +50,13 @@
 		});
 		return width;
 	};
-	const buttons_moved = async () => {
-		dispatch('value_change', {
+	const buttons_moved = () => {
+		let dispatch_value = {
 			min: min_value,
 			max: max_value
-		});
+		};
+		dispatch('value_change', dispatch_value);
+		//console.log('event dispatch', dispatch_value);
 	};
 
 	async function mouse_move(event) {
@@ -79,6 +77,7 @@
 
 	function mouse_up() {
 		if (isTrackingLeft || isTrackingRight) {
+			//console.log('mouse_up triggered');
 			isTrackingLeft = false;
 			isTrackingRight = false;
 			prev_x = 0;

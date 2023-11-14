@@ -3,7 +3,6 @@
 	const dispatch = createEventDispatcher();
 
 	import Slider from './slider.svelte';
-	import BgImage from '$lib/assets/bgs/section_bg.svg';
 	const MIN_V = 0;
 	const MAX_V = 2500;
 
