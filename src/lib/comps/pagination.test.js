@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/svelte';
-import Pagination from './Pagination.svelte';
+import Pagination from './pagination.svelte';
 
 describe('Pagination', () => {
 	it('renders correct number of page buttons', () => {
