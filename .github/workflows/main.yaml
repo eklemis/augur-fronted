@@ -1,8 +1,7 @@
-name: CI
-run-name: ${{ github.actor }} is learning GitHub Actions
+name: CI/CD
 on: [push]
 jobs:
-  check-bats-version:
+  build-project:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,8 +14,15 @@ jobs:
         run: npm run test
       - name: build the production version
         run: npm run build
-      - run: ls  
-      - name: Zip artifact for deployment
-        run: zip build.zip ./* -r  
+      # - run: ls  
+      # - name: Zip artifact for deployment
+      #   run: zip build.zip ./* -r  
     #   - name: Start the production app
     #     run: node build
+      - name: 'Deploy to Azure'
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: augur-frontend # Replace with your app name
+          # slot-name: <Your-Slot-Name> # If you use slots
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: build
