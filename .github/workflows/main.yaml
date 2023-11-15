@@ -14,15 +14,34 @@ jobs:
         run: npm run test
       - name: build the production version
         run: npm run build
-      # - run: ls  
-      # - name: Zip artifact for deployment
-      #   run: zip build.zip ./* -r  
-    #   - name: Start the production app
-    #     run: node build
+      - run: ls  
+      - name: Zip artifact for deployment
+        run: zip build.zip ./* -r  
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v3
+        with:
+          name: augur-app
+          path: build.zip  
+      # - name: Start the production app
+      #   run: node build
+  deploy-project:
+    runs-on: ubuntu-latest
+    needs: build-project
+    environment:
+      name: 'production'
+      url: 'https://augur-frontend.azurewebsites.net/'
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: augur-app
+      - name: Unzip artifact for deployment
+        run: unzip build.zip    
       - name: 'Deploy to Azure'
+        id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: augur-frontend # Replace with your app name
-          # slot-name: <Your-Slot-Name> # If you use slots
+          slot-name: 'production'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: build
