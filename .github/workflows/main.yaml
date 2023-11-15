@@ -1,56 +1,43 @@
-name: CI/CD
-on: [push]
+name: Docker CI/CD
+
+on:
+  push:
+    branches: [ main ]
+
 jobs:
-  build-project:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18.0.0'
-      - name: Install dependencies
-        run: npm install
-      - name: Run all vite tests
-        run: npm run test
-      # - name: build the production version
-      #   run: npm run build
-      # - run: ls # List files in build directory for debugging
-      # - run: cat package.json
-      - name: Zip artifact for deployment
-        run: zip artifact.zip ./* -r
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v3
-        with:
-          name: augur-app
-          path: artifact.zip  
-      # - name: Start the production app
-      #   run: node build
-  deploy-project:
+    - uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: esn46/augur-frontend:latest
+
+  deploy-to-azure:
     runs-on: ubuntu-latest
-    needs: build-project
-    environment:
-      name: 'production'
-      url: 'https://augur-frontend.azurewebsites.net/'
+    needs: build-and-push
     steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v3
-        with:
-          name: augur-app
-      - name: Unzip artifact for deployment
-        run: unzip artifact.zip
-      - name: fresh install dependencies
-        run: npm install
-      - name: see file list
-        run: ls
-      - run: pwd
-      - run: npm run build
-      # - name: recheck if there is no missing file
-      #   run: npm run test
-      - name: 'Deploy to Azure'
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: augur-frontend # Replace with your app name
-          slot-name: 'production'
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: build
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Deploy to Azure App Service
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: augur-frontend
+        images: 'esn46/augur-frontend:latest'
