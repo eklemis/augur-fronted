@@ -36,7 +36,7 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Deploy to Azure App Service
+    - name: Deploy to Azure App Service by Container
       uses: azure/webapps-deploy@v2
       with:
         app-name: augur-frontend
