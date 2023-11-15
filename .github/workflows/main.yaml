@@ -1,13 +1,22 @@
 name: CI
-
-# This workflow is triggered on pushes to the repository.
+run-name: ${{ github.actor }} is learning GitHub Actions
 on: [push]
-
 jobs:
-  build:
+  check-bats-version:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Run a script
-      run: echo Hello, world!
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.0.0'
+      - name: Install dependencies
+        run: npm install
+      - name: Run all vite tests
+        run: npm run test
+      - name: build the production version
+        run: npm run build
+      - run: ls  
+      - name: Zip artifact for deployment
+        run: zip build.zip ./* -r  
+    #   - name: Start the production app
+    #     run: node build
