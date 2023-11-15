@@ -39,7 +39,7 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip artifact.zip
       - name: fresh install dependencies
-        run: npm ci --production
+        run: npm install
       - name: see file list
         run: ls
       - run: pwd
