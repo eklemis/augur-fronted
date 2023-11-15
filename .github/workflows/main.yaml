@@ -12,17 +12,17 @@ jobs:
         run: npm install
       - name: Run all vite tests
         run: npm run test
-      - name: build the production version
-        run: npm run build
-      - run: ls # List files in build directory for debugging
-      - run: cat package.json
+      # - name: build the production version
+      #   run: npm run build
+      # - run: ls # List files in build directory for debugging
+      # - run: cat package.json
       - name: Zip artifact for deployment
-        run: zip build.zip ./* -r
+        run: zip artifact.zip ./* -r
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: augur-app
-          path: build.zip  
+          path: artifact.zip  
       # - name: Start the production app
       #   run: node build
   deploy-project:
@@ -37,11 +37,12 @@ jobs:
         with:
           name: augur-app
       - name: Unzip artifact for deployment
-        run: unzip build.zip
+        run: unzip artifact.zip
+      - name: fresh install dependencies
+        run: npm ci --production
       - name: see file list
         run: ls
       - run: pwd
-      - run: cat package.json  
       - name: recheck if there is no missing file
         run: npm run test
       - name: 'Deploy to Azure'
