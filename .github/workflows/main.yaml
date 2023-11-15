@@ -15,6 +15,7 @@ jobs:
       - name: build the production version
         run: npm run build
       - run: ls # List files in build directory for debugging
+      - run: cat package.json
       - name: Zip artifact for deployment
         run: zip build.zip ./* -r
       - name: Upload artifact for deployment job
