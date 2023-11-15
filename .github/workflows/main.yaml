@@ -14,9 +14,9 @@ jobs:
         run: npm run test
       - name: build the production version
         run: npm run build
-      - run: ls  
-      - name: Zip artifact for deployment
-        run: zip build.zip ./* -r  
+      - run: ls # List files in build directory for debugging
+      - name: Zip build directory for deployment
+        run: zip -r build.zip build  # Zip only the build directory
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
