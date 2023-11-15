@@ -36,7 +36,12 @@ jobs:
         with:
           name: augur-app
       - name: Unzip artifact for deployment
-        run: unzip build.zip    
+        run: unzip build.zip
+      - name: see file list
+        run: ls
+      - run: pwd  
+      - name: recheck if there is no missing file
+        run: npm run test
       - name: 'Deploy to Azure'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
